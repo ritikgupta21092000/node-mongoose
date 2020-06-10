@@ -44,4 +44,39 @@ promoRouter.route("/")
       })
   });
 
+promoRouter.route("/:promoId")
+  .get((req, res, next) => {
+    promotions.findById(req.params.promoId)
+      .then((result) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  })
+  .post((req, res, next) => {
+    res.statusCode = 403
+    res.end("POST Operation not supported on /promotions/" + req.params.promoId);
+  })
+  .put((req, res, next) => {
+    promotions.findByIdAndUpdate(req.params.promoId, {$set: req.body}, {new: true})
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  })
+  .delete((req, res, next) => {
+    promotions.findByIdAndRemove(req.params.promoId)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+
 module.exports = promoRouter;
