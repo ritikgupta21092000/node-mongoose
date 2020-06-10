@@ -3,12 +3,14 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-
 const promoRouter = require("./routes/promoRouter");
+const leaderRouter = require("./routes/leaderRouter");
 
 const promotions = require("./models/promotions");
+const leader = require("./models/leaders");
 
 app.use("/promotions", promoRouter);
+app.use("/leaders", leaderRouter);
 
 const url = "mongodb://localhost:27017/conFusion";
 

@@ -31,6 +31,7 @@ promoRouter.route("/")
       });
   })
   .put((req, res, next) => {
+    res.statusCode = 403;
     res.end("PUT Operation is not supported on /promotions");
   })
   .delete((req, res, next) => {
