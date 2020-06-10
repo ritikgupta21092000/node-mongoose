@@ -44,4 +44,40 @@ leaderRouter
       });
   });
 
+  leaderRouter.route("/:leaderId")
+    .get((req, res, next) => {
+      leaders.findById(req.params.leaderId)
+        .then((result) => {
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "application/json");
+          res.json(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .post((req, res, next) => {
+      res.statusCode = 403
+      res.end("POST Operation not supported on /leaders/" + req.params.leaderId);
+    })
+    .put((req, res, next) => {
+      leaders.findByIdAndUpdate(req.params.leaderId, {$set: req.body}, {new: true})
+        .then((result) => {
+          res.json(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .delete((req, res, next) => {
+      leaders.findByIdAndRemove(req.params.leaderId)
+        .then((result) => {
+          res.json(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+
+
 module.exports = leaderRouter;
