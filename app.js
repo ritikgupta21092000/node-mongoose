@@ -16,7 +16,7 @@ function auth(req, res, next) {
   if (!req.signedCookies.user) {
     var authHeader = req.headers.authorization;
     if (!authHeader) {
-      var err = new Error("You are not authenticated");
+      var err = new Error("You are not authenticated.Please Authenticate first");
       res.setHeader("WWW-Authenticate", "Basic");
       err.status = 401;
       next(err);
@@ -28,7 +28,7 @@ function auth(req, res, next) {
       res.cookie("user", "admin", {signed: true});
       next();
     } else {
-      var err = new Error("You are not authenticated");
+      var err = new Error("You are not authenticated.Please Authenticate first");
       res.setHeader("WWW-Authenticate", "Basic");
       err.status = 401;
       next(err);
@@ -37,7 +37,7 @@ function auth(req, res, next) {
     if (req.signedCookies.user === "admin") {
       next();
     } else {
-      var err = new Error("You are not authenticated");
+      var err = new Error("You are not authenticated.Please Authenticate first");
       res.setHeader("WWW-Authenticate", "Basic");
       err.status = 401;
       next(err);
