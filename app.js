@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 
 const app = express();
 
@@ -10,10 +12,17 @@ const leaderRouter = require("./routes/leaderRouter");
 const promotions = require("./models/promotions");
 const leader = require("./models/leaders");
 
-app.use(cookieParser("1234-5678-9101112"));
+// app.use(cookieParser("1234-5678-9101112"));
+app.use(session({
+  name: "session-id",
+  secret: "1234-5678-9101112",
+  saveUninitialized: false,
+  resave: false,
+  store: new FileStore()
+}));
 
 function auth(req, res, next) {
-  if (!req.signedCookies.user) {
+  if (!req.session.user) {
     var authHeader = req.headers.authorization;
     if (!authHeader) {
       var err = new Error("You are not authenticated.Please Authenticate first");
@@ -25,7 +34,7 @@ function auth(req, res, next) {
     var username = auth[0];
     var password = auth[1];
     if (username === "admin" && password === "password") {
-      res.cookie("user", "admin", {signed: true});
+      req.session.user = "admin";
       next();
     } else {
       var err = new Error("You are not authenticated.Please Authenticate first");
@@ -34,7 +43,7 @@ function auth(req, res, next) {
       next(err);
     }
   } else {
-    if (req.signedCookies.user === "admin") {
+    if (req.session.user === "admin") {
       next();
     } else {
       var err = new Error("You are not authenticated.Please Authenticate first");
