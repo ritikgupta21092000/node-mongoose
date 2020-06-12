@@ -6,9 +6,11 @@ const FileStore = require("session-file-store")(session);
 
 const app = express();
 
+const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
 
+const dishes = require("./models/dishes");
 const promotions = require("./models/promotions");
 const leader = require("./models/leaders");
 
@@ -57,6 +59,7 @@ function auth(req, res, next) {
 
 app.use(auth);
 
+app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
 
@@ -66,7 +69,7 @@ const connect = mongoose.connect(url);
 
 connect
   .then((db) => {
-    console.log("Connected Successfully to the database: ", db);
+    console.log("Connected Successfully to the database");
   })
   .catch((err) => {
     console.log(err);
