@@ -1,0 +1,36 @@
+const express = require("express");
+const bodyParser = require("body-parser");
+const passport = require("passport");
+
+const User = require("../models/user");
+
+const router = express.Router();
+
+router.use(bodyParser.json());
+
+router.post("/signup", (req, res) => {
+    const user = new User({
+        username: req.body.username
+    });
+    User.register(user, req.body.password, (err, user) => {
+        if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({err: err});
+        } else {
+            passport.authenticate("local")(req, res, () => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json({success: true, status: "Registered Successfully"});
+            })
+        }
+    });
+});
+
+router.post("/login", passport.authenticate("local"), (req, res) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.json({success: true, status: "Successfully LoggedIn"});
+})
+
+module.exports = router;

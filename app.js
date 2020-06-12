@@ -3,12 +3,16 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
+const passport = require("passport");
+
+const authenticate = require("./authenticate");
 
 const app = express();
 
 const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
+const router = require("./routes/users");
 
 const dishes = require("./models/dishes");
 const promotions = require("./models/promotions");
@@ -23,38 +27,19 @@ app.use(session({
   store: new FileStore()
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use("/users", router);
+
 function auth(req, res, next) {
-  if (!req.session.user) {
-    var authHeader = req.headers.authorization;
-    if (!authHeader) {
-      var err = new Error("You are not authenticated.Please Authenticate first");
-      res.setHeader("WWW-Authenticate", "Basic");
-      err.status = 401;
-      next(err);
-    }
-    var auth = new Buffer.from(authHeader.split(" ")[1], "base64").toString().split(":");
-    var username = auth[0];
-    var password = auth[1];
-    if (username === "admin" && password === "password") {
-      req.session.user = "admin";
-      next();
-    } else {
-      var err = new Error("You are not authenticated.Please Authenticate first");
-      res.setHeader("WWW-Authenticate", "Basic");
-      err.status = 401;
-      next(err);
-    }
+  if (!req.user) {
+    var err = new Error("You are not authenticated");
+    err.status = 403;
+    next(err);
   } else {
-    if (req.session.user === "admin") {
-      next();
-    } else {
-      var err = new Error("You are not authenticated.Please Authenticate first");
-      res.setHeader("WWW-Authenticate", "Basic");
-      err.status = 401;
-      next(err);
-    }
+    next();
   }
-  
 }
 
 app.use(auth);
