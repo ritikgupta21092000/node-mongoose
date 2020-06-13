@@ -6,51 +6,40 @@ const FileStore = require("session-file-store")(session);
 const passport = require("passport");
 
 const authenticate = require("./authenticate");
+const config = require("./config");
 
 const app = express();
+
+const router = require("./routes/users");
 
 const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
-const router = require("./routes/users");
+
 
 const dishes = require("./models/dishes");
 const promotions = require("./models/promotions");
 const leader = require("./models/leaders");
 
 // app.use(cookieParser("1234-5678-9101112"));
-app.use(session({
-  name: "session-id",
-  secret: "1234-5678-9101112",
-  saveUninitialized: false,
-  resave: false,
-  store: new FileStore()
-}));
+
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/users", router);
 
-function auth(req, res, next) {
-  if (!req.user) {
-    var err = new Error("You are not authenticated");
-    err.status = 403;
-    next(err);
-  } else {
-    next();
-  }
-}
 
-app.use(auth);
 
 app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
 
-const url = "mongodb://localhost:27017/conFusion";
+const url = config.mongoUrl;
 
-const connect = mongoose.connect(url);
+const connect = mongoose.connect(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 connect
   .then((db) => {
