@@ -45,6 +45,16 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
     res.json({success: true, token: token, status: "Successfully LoggedIn"});
-})
+});
+
+router.get("/", authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+    User.find({})
+        .then((user) => {
+            res.json(user);
+        })
+        .catch((err) => {
+            res.json({err: err});
+        });
+});
 
 module.exports = router;
