@@ -15,6 +15,7 @@ const router = require("./routes/users");
 const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
+const uploadRouter = require("./routes/uploadRouter");
 
 const User = require("./models/user");
 const dishes = require("./models/dishes");
@@ -34,6 +35,7 @@ app.use("/users", router);
 app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
+app.use("/imageUpload", uploadRouter);
 
 const url = config.mongoUrl;
 
