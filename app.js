@@ -16,11 +16,13 @@ const dishRouter = require("./routes/dishRouter");
 const promoRouter = require("./routes/promoRouter");
 const leaderRouter = require("./routes/leaderRouter");
 const uploadRouter = require("./routes/uploadRouter");
+const favoriteRouter = require("./routes/favoriteRouter");
 
 const User = require("./models/user");
 const dishes = require("./models/dishes");
 const promotions = require("./models/promotions");
 const leader = require("./models/leaders");
+const Favorites = require("./models/favorite");
 
 
 // app.use(cookieParser("1234-5678-9101112"));
@@ -36,6 +38,7 @@ app.use("/dishes", dishRouter);
 app.use("/promotions", promoRouter);
 app.use("/leaders", leaderRouter);
 app.use("/imageUpload", uploadRouter);
+app.use("/favorites", favoriteRouter);
 
 const url = config.mongoUrl;
 
